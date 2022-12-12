@@ -4,7 +4,7 @@ import "./styles.scss";
 import { 
   Button, Container, CssBaseline, FormControl, 
   Grid, Icon, IconButton, Input, InputLabel, MenuItem, Select, Stack, Typography,
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Paper
+  TextField, ToggleButton, ToggleButtonGroup 
 } from '@mui/material';
 
 import { useTheme, ThemeProvider, createTheme } from '@mui/material/styles';
@@ -20,6 +20,7 @@ function App() {
   const [lang, setLang] = React.useState('en');
   const [sentence, setSentence] = React.useState("test");
   const [details, setDetails] = React.useState('');
+  const [resultLang, setResultLang] = React.useState('en');
 
   const handleLangChange = (event) => {
     setLang(event.target.value);
@@ -34,14 +35,12 @@ function App() {
   // const flat = require('flat')
   // const {get: getProp} = require('lodash')
   // const cheerio = require('cheerio')
-  const locale = 'en';
 
-
-  const handleClick = async () => {
+  const sendLookUp = async () => {
 
     // setDetails(dtls);  
     // `https://${locale}.wiktionary.org/w/api.php?origin=*&action=query&prop=extracts&titles=${sentence}&format=json`
-    const url = `https://en.wiktionary.org/w/api.php?origin=*&action=parse&prop=text&formatversion=2&page=` + sentence;
+    const url = `https://${resultLang}.wiktionary.org/w/api.php?origin=*&action=parse&prop=text&formatversion=2&page=` + sentence;
   
     let resp = await fetch(url, {
         method: "GET"
@@ -95,9 +94,26 @@ function App() {
         console.log(text)
       }
     }
-
-    
   }
+
+  const handleClickLookUp = async () => {
+    sendLookUp();
+  }
+
+  const handleChangeResultLang = async (
+    event,
+    newResultLang,
+  ) => {
+    // Enforce value set
+    if (newResultLang !== null) {
+    setResultLang(newResultLang);
+    }
+  };
+
+  // call look up function after resultLang successfully changed
+  useEffect(() => {
+    sendLookUp();
+  }, [resultLang]);
 
   const domain = "http://yangcx.tk/";
 
@@ -149,8 +165,21 @@ function App() {
               multiline
               minRows={2} 
               maxRows={Infinity} />
-            <Stack direction="row" justifyContent="flex-end">
-              <Button variant="outlined" onClick={() => handleClick()} sx={{width: "auto"}}>Lookup</Button>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <ToggleButtonGroup
+                color="primary"
+                value={resultLang}
+                exclusive
+                onChange={handleChangeResultLang}
+                aria-label="ResultLang"
+              >
+                <ToggleButton value="en">En</ToggleButton>
+                <ToggleButton value="zh">漢</ToggleButton>
+                <ToggleButton value="ja">日</ToggleButton>
+                <ToggleButton value="de">De</ToggleButton>
+                <ToggleButton value="fr">Fr</ToggleButton>
+              </ToggleButtonGroup>
+              <Button variant="outlined" onClick={() => handleClickLookUp()} sx={{width: "auto"}}>Lookup</Button>
             </Stack>
 
             <div dangerouslySetInnerHTML={{__html: details}} />
