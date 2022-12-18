@@ -72,15 +72,17 @@ function App() {
         
         // let selected = doc.querySelector("#mw-content-text > div:nth-child(2) > div > pre > span:nth-child(16) > div > table > tbody > tr > td > table > tbody > tr:nth-child(1) > td:nth-child(2) > span.IPA");
 
-        let engstarter = '</h2>';
-        let engind = text.indexOf(engstarter);
-        text = text.slice(engind + engstarter.length);
-        engind = text.indexOf('<h2>');
+        if (text.indexOf('mw-toc-heading') != -1) {
+          let engstarter = '</h2>';
+          let engind = text.indexOf(engstarter);
+          text = text.slice(engind + engstarter.length);
+        }
+        let engind = text.indexOf('<h2>');
         text = text.slice(engind);
-        let ender = '<hr';
-        let nextind = text.indexOf(ender);
-        if (nextind != -1)
-          text = text.slice(0, nextind);
+        // let ender = '<hr';
+        // let nextind = text.indexOf(ender);
+        // if (nextind != -1)
+        //   text = text.slice(0, nextind);
 
         // How to convert HTML Entity Number to symbols?
         text = text.replaceAll('\\n', '')
