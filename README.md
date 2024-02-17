@@ -1,5 +1,5 @@
 # word-lookuper
 
-https://word-lookuper.twaqngu.com/
+https://word-lookuper.pustot.com/
 
 With only primitive functionalities.
